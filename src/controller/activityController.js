@@ -78,7 +78,7 @@ const updateActivity = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const activity = await activitySchema.findById({ _id: id }, req.body, { new: true });
+        const activity = await activitySchema.findByIdAndUpdate({ _id: id }, req.body, { new: true });
         return res.status(200).json({
             success: true,
             message: 'Activity updated',

@@ -91,11 +91,38 @@ const deleteMatter = async (req, res) => {
         });
     }
 }
+const  partialGrade = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const matter = await matterSchema.findOne({ _id: id }).populate('activities');
+        const sum = matter.activities.reduce((acc, activity) => {
+            return acc + activity.gradeActivity;
+        }, 0);
+        const partial = sum / matter.activities.length;
+        const materUpdate = await matterSchema.findByIdAndUpdate(id, {
+            grade: partial
+        }, { new: true });
+        await materUpdate.save();
+
+        return res.status(200).json({
+            success: true,
+            message: 'Matter found',
+            partial
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: 'Error to get matter',
+            error
+        });
+    }
+}
 
 module.exports = {
     createMatter,
     getMatters,
     getMatter,
     updateMatter,
-    deleteMatter
+    deleteMatter,
+    partialGrade
 }

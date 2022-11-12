@@ -3,7 +3,8 @@ const {createMatter,
         getMatters,
         getMatter,
         updateMatter,
-        deleteMatter} = require('../controller/matterController');
+        deleteMatter,
+        partialGrade} = require('../controller/matterController');
 
 const router = Router();
 
@@ -12,5 +13,6 @@ router.get('/get', getMatters);
 router.get('/get/:id', getMatter);
 router.put('/update/:id', updateMatter);
 router.delete('/delete/:id', deleteMatter);
+router.get('/partial/:id', partialGrade);
 
 module.exports = router;

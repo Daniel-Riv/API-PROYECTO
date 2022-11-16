@@ -39,7 +39,7 @@ const getMatters = async (req, res) => {
 const getMatter = async (req, res) => {
     const { id } = req.params;
     try {
-        const matter = await matterSchema.findById({ _id: id });
+        const matter = await matterSchema.findById({ _id: id }).populate('activities');
         return res.status(200).json({
             success: true,
             message: 'Matter found',

@@ -91,23 +91,45 @@ const deleteMatter = async (req, res) => {
         });
     }
 }
-const  partialGrade = async (req, res) => {
+const partialGrade = async (req, res) => {
     const { id } = req.params;
     try {
         const matter = await matterSchema.findOne({ _id: id }).populate('activities');
+        const { activities, gradeMax, gradeMin } = matter;
+
+        const activitiesFormated = activities.map(activity => ({
+            name: activity.name,
+            gradeActivity: activity.gradeActivity,
+        }));
+
         const sum = matter.activities.reduce((acc, activity) => {
             return acc + activity.gradeActivity;
         }, 0);
+
         const partial = sum / matter.activities.length;
         const materUpdate = await matterSchema.findByIdAndUpdate(id, {
             grade: partial
         }, { new: true });
+
+        //progress note max
+        const progressNote = (partial * 100) / gradeMax; // 100%
+        const progressNoteMaxFormated = `${progressNote.toFixed(2)}%`;
+
+        //progress note min
+        const progressNoteMin = (partial * 100) / gradeMin; // 100%
+        const progressNoteMinFormated = progressNoteMin >= 100 ? "100%" : `${progressNoteMin.toFixed(2)}%`;
+
         await materUpdate.save();
 
         return res.status(200).json({
             success: true,
             message: 'Matter found',
-            partial
+            partial,
+            gradeMin,
+            gradeMax,
+            activities: activitiesFormated,
+            progressMax: progressNoteMaxFormated,
+            progressMin: progressNoteMinFormated
         })
     } catch (error) {
         return res.status(500).json({

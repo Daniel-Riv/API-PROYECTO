@@ -119,17 +119,19 @@ const partialGrade = async (req, res) => {
         const progressNoteMin = (partial * 100) / gradeMin; // 100%
         const progressNoteMinFormated = progressNoteMin >= 100 ? "100%" : `${progressNoteMin.toFixed(2)}%`;
 
+        const message = progressNoteMin >= 100 ? "Aprobado" : "Aun no aprobado";
+
         await materUpdate.save();
 
         return res.status(200).json({
             success: true,
-            message: 'Matter found',
+            message,
             partial,
             gradeMin,
             gradeMax,
             activities: activitiesFormated,
             progressMax: progressNoteMaxFormated,
-            progressMin: progressNoteMinFormated
+            progressMin: progressNoteMinFormated,
         })
     } catch (error) {
         return res.status(500).json({

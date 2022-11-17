@@ -110,6 +110,7 @@ const partialGrade = async (req, res) => {
         const materUpdate = await matterSchema.findByIdAndUpdate(id, {
             grade: partial
         }, { new: true });
+        const partialFormated = partial.toFixed(2); 
 
         //progress note max
         const progressNote = (partial * 100) / gradeMax; // 100%
@@ -126,7 +127,7 @@ const partialGrade = async (req, res) => {
         return res.status(200).json({
             success: true,
             message,
-            partial,
+            partial: parseFloat(partialFormated),
             gradeMin,
             gradeMax,
             activities: activitiesFormated,
